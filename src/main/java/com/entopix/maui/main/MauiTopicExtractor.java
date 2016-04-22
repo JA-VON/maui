@@ -26,7 +26,11 @@ import com.entopix.maui.vocab.VocabularyStore_HT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+
 import weka.core.Attribute;
+import weka.core.Debug.Log;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -534,6 +538,7 @@ public class MauiTopicExtractor implements OptionHandler {
 						}
 
 						documentTopics.addTopic(topic);
+						
 						log.info("Topic " + title + " " + id + " " + probability + " > " + topic.isCorrect());
 
 						index++;
@@ -579,6 +584,7 @@ public class MauiTopicExtractor implements OptionHandler {
 	}
 
 	public void printTopics(List<MauiTopics> allDocumentsTopics) {
+		JSONArray objects = new JSONArray();
 		FileOutputStream out = null;
 		PrintWriter printer = null;
 
@@ -599,6 +605,29 @@ public class MauiTopicExtractor implements OptionHandler {
 					}
 					printer.println();
 				}
+				
+				out = new FileOutputStream(documentTopics.getFilePath().replace(".txt", ".json"));
+				if (!documentEncoding.equals("default")) {
+					printer = new PrintWriter(new OutputStreamWriter(out, documentEncoding));
+				} else {
+					printer = new PrintWriter(out);
+				}
+
+				for (Topic topic : documentTopics.getTopics()) {
+					JSONObject topicObject = new JSONObject();
+					topicObject.put("title", topic.getTitle());
+					topicObject.put("id", topic.getId());
+					topicObject.put("probability", topic.getProbability());
+					topicObject.put("correct", topic.isCorrect());
+					
+					objects.add(topicObject);
+				}
+				
+				JSONObject resultsObject = new JSONObject();
+				resultsObject.put("results", objects);
+				printer.print(resultsObject.toJSONString());
+				printer.close();
+				out.close();
 				printer.close();
 				out.close();
 			} catch (FileNotFoundException e) {
