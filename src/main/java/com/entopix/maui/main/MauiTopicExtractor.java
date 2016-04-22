@@ -584,7 +584,6 @@ public class MauiTopicExtractor implements OptionHandler {
 	}
 
 	public void printTopics(List<MauiTopics> allDocumentsTopics) {
-		JSONArray objects = new JSONArray();
 		FileOutputStream out = null;
 		PrintWriter printer = null;
 
@@ -612,22 +611,7 @@ public class MauiTopicExtractor implements OptionHandler {
 				} else {
 					printer = new PrintWriter(out);
 				}
-
-				for (Topic topic : documentTopics.getTopics()) {
-					JSONObject topicObject = new JSONObject();
-					topicObject.put("title", topic.getTitle());
-					topicObject.put("id", topic.getId());
-					topicObject.put("probability", topic.getProbability());
-					topicObject.put("correct", topic.isCorrect());
-					
-					objects.add(topicObject);
-				}
 				
-				JSONObject resultsObject = new JSONObject();
-				resultsObject.put("results", objects);
-				printer.print(resultsObject.toJSONString());
-				printer.close();
-				out.close();
 				printer.close();
 				out.close();
 			} catch (FileNotFoundException e) {
