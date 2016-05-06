@@ -1,5 +1,8 @@
 # Maui (GPL)
 
+##Changes by Javon Davis
+* On the json_output branch executing maui now returns the results in JSON format
+
 ###Summary
 Maui automatically identifies main topics in text documents. Depending on the task, topics are tags, keywords, keyphrases, vocabulary terms, descriptors, index terms or titles of Wikipedia articles.
 
