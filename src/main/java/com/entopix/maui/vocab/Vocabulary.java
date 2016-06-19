@@ -588,7 +588,9 @@ public class Vocabulary {
 	 */
 	public ArrayList<String> getSenses(String phrase) {
 		String normalized = normalizePhrase(phrase);
+		log.warn(normalized);
 		ArrayList<String> senses = vocabStore.getSensesForPhrase(normalized);
+		log.warn("Senses length:"+senses.size());
 		return senses;
 	}
 

@@ -1415,9 +1415,12 @@ public class MauiFilter extends Filter {
 		String keyphrase, listing;
 		int tab, frequency;
 
-		StringTokenizer tok = new StringTokenizer(keyphraseListings, "\n");
-		while (tok.hasMoreTokens()) {
-			listing = tok.nextToken();
+		//StringTokenizer tok = new StringTokenizer(keyphraseListings, "\r\n");
+		String[] listings = keyphraseListings.split("\n");
+		log.warn("Length:"+listings.length);
+		
+		for(int i =0; i<listings.length; i++){
+			listing = listings[i];
 			listing = listing.trim();
 
 			// if the keyphrase file contains frequencies associated with each
@@ -1442,13 +1445,17 @@ public class MauiFilter extends Filter {
 					counter.increment(frequency);
 				}
 			} else {
+				log.warn("In Vocab");
 				int colonIndex = keyphrase.indexOf(":");
 				if (colonIndex != -1) {
 					keyphrase = keyphrase.substring(colonIndex + 2);
 				}
 				for (String id : vocabulary.getSenses(keyphrase)) {
+					log.warn("Sense:"+id);
 					keyphrase = vocabulary.getTerm(id);
+					log.warn("keyphrase:"+keyphrase);
 					Counter counter = keyphrases.get(keyphrase);
+					log.warn("counter:"+counter);
 					if (counter == null) {
 						keyphrases.put(keyphrase, new Counter(frequency));
 					} else {
@@ -1457,6 +1464,47 @@ public class MauiFilter extends Filter {
 				}
 			}
 		}
+//		while (tok.hasMoreTokens()) {
+//			listing = tok.nextToken();
+//			listing = listing.trim();
+//
+//			// if the keyphrase file contains frequencies associated with each
+//			// term,
+//			// parse these separately
+//			tab = listing.indexOf("\t");
+//			if (tab != -1) {
+//				keyphrase = listing.substring(0, tab);
+//				frequency = Integer.parseInt(listing.substring(tab + 1));
+//			} else {
+//				keyphrase = listing;
+//				frequency = 1;
+//			}
+//
+//			if (vocabularyName.equals("none")) {
+//
+//				keyphrase = pseudoPhrase(keyphrase);
+//				Counter counter = keyphrases.get(keyphrase);
+//				if (counter == null) {
+//					keyphrases.put(keyphrase, new Counter(frequency));
+//				} else {
+//					counter.increment(frequency);
+//				}
+//			} else {
+//				int colonIndex = keyphrase.indexOf(":");
+//				if (colonIndex != -1) {
+//					keyphrase = keyphrase.substring(colonIndex + 2);
+//				}
+//				for (String id : vocabulary.getSenses(keyphrase)) {
+//					keyphrase = vocabulary.getTerm(id);
+//					Counter counter = keyphrases.get(keyphrase);
+//					if (counter == null) {
+//						keyphrases.put(keyphrase, new Counter(frequency));
+//					} else {
+//						counter.increment(frequency);
+//					}
+//				}
+//			}
+//		}
 		if (keyphrases.isEmpty()) {
 			log.warn("Warning! This documents does not contain valid keyphrases");
 			log.warn(keyphraseListings);
